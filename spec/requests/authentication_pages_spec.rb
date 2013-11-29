@@ -31,7 +31,8 @@ describe "Authentication" do
 
     describe "with valid information" do
       let(:user) { FactoryGirl.create(:user) }  
-      before { valid_signin(user) }  
+      before { sign_in user }
+      # before { valid_signin(user) }  
       # we  use  before { valid_signin(user) }   from spec/support/utilities.rb  ApplicationHelper    instead of:     
       # before do
       #   fill_in "Email",    with: user.email.upcase
@@ -39,6 +40,7 @@ describe "Authentication" do
       #   click_button "Sign in"
       # end
 
+      it { should have_link('Users',    href: users_path) }
       it { should have_selector('title', text: user.name) }
       it { should have_link('Profile', href: user_path(user)) }
       it { should have_link('Settings', href: edit_user_path(user)) }
@@ -84,6 +86,10 @@ describe "Authentication" do
         describe "submitting to the update action" do
           before { put user_path(user) }
           specify { response.should redirect_to(signin_path) }
+        end
+        describe "visiting the user index" do
+          before { visit users_path }
+          it { should have_selector('title', text: 'Sign in') }
         end
       end
     end
