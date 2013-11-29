@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
   before_filter :signed_in_user, only: [:edit, :update]
+  before_filter :correct_user,   only: [:edit, :update]
 
 	def show
     	@user = User.find(params[:id])
@@ -21,7 +22,8 @@ class UsersController < ApplicationController
   end
 
   def edit
-    @user = User.find(params[:id])
+    # @user = User.find(params[:id])
+    # Now that the correct_user before filter defines @user, we can omit it 
   end
 
   def update
@@ -39,9 +41,17 @@ class UsersController < ApplicationController
   private
 
     def signed_in_user
-      redirect_to signin_url, notice: "Please sign in." unless signed_in?
-      #is equivalent to
+      unless signed_in?
+        store_location
+        redirect_to signin_url, notice: "Please sign in."
+       #is equivalent to
       # flash[:notice] = "Please sign in."
       # redirect_to signin_url
+      end  
+    end
+
+    def correct_user
+      @user = User.find(params[:id])
+      redirect_to(root_path) unless current_user?(@user)
     end
 end
