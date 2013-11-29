@@ -1,3 +1,5 @@
+https://pacific-wave-1030.herokuapp.com
+
 # Перевод Ruby on Rails Tutorial: пример приложения (#2)
 
 Это пример приложения для
