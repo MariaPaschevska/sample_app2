@@ -18,9 +18,10 @@ describe "Authentication" do
       before { click_button "Sign in" }
 
       it { should have_selector('title', text: 'Sign in') }
+      it { should have_error_message('Invalid') }
       # we use spec/support/utilities.rb  ApplicationHelper to define :have_error_message
-      # it { should have_error_message('Invalid') }
-      it { should have_selector('div.alert.alert-error', text: 'Invalid') }      
+      # it { should have_error_message('Invalid') }  instead of:
+      # it { should have_selector('div.alert.alert-error', text: 'Invalid') }      
 
       describe "after visiting another page" do
         before { click_link "Home" }
@@ -29,13 +30,14 @@ describe "Authentication" do
     end
 
     describe "with valid information" do
-      let(:user) { FactoryGirl.create(:user) }    
-      # we can use  before { valid_signin(user) }   from spec/support/utilities.rb  ApplicationHelper  - but this file isn't connected right...
-      before do
-        fill_in "Email",    with: user.email.upcase
-        fill_in "Password", with: user.password
-        click_button "Sign in"
-      end
+      let(:user) { FactoryGirl.create(:user) }  
+      before { valid_signin(user) }  
+      # we  use  before { valid_signin(user) }   from spec/support/utilities.rb  ApplicationHelper    instead of:     
+      # before do
+      #   fill_in "Email",    with: user.email.upcase
+      #   fill_in "Password", with: user.password
+      #   click_button "Sign in"
+      # end
 
       it { should have_selector('title', text: user.name) }
       it { should have_link('Profile', href: user_path(user)) }
@@ -46,6 +48,27 @@ describe "Authentication" do
       describe "followed by signout" do
         before { click_link "Sign out" }
         it { should have_link('Sign in') }
+      end
+    end
+  end
+
+
+  describe "authorization" do
+
+    describe "for non-signed-in users" do
+      let(:user) { FactoryGirl.create(:user) }
+
+      describe "in the Users controller" do
+
+        describe "visiting the edit page" do
+          before { visit edit_user_path(user) }
+          it { should have_selector('title', text: 'Sign in') }
+        end
+
+        describe "submitting to the update action" do
+          before { put user_path(user) }
+          specify { response.should redirect_to(signin_path) }
+        end
       end
     end
   end
