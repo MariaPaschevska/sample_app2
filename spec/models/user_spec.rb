@@ -31,7 +31,8 @@ describe User do
   it { should respond_to(:remember_token) }    # Этот session объект делает идентификатор пользователя доступным от страницы к странице, сохраняя его в cookie
   it { should respond_to(:authenticate) }
   it { should respond_to(:microposts) }   # test for the presence of a microposts attribute
-  it { should respond_to(:feed) }    # каждый пользователь должен иметь поток сообщений,
+  it { should respond_to(:feed) }    # каждый пользователь должен иметь поток сообщений
+  it { should respond_to(:relationships) }
 
   it { should be_valid }
 

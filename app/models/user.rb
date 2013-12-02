@@ -14,6 +14,7 @@ class User < ActiveRecord::Base
   has_secure_password
   # dependent: :destroy приговаривает связанные микросообщения (т.e., те что принадлежат данному пользователю) быть уничтоженными при уничтожении самого пользователя
   has_many :microposts, dependent: :destroy
+  has_many :relationships, foreign_key: "follower_id", dependent: :destroy
 
   # before_save { |user| user.email = email.downcase }
   before_save { email.downcase! }
