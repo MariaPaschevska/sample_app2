@@ -31,6 +31,7 @@ describe User do
   it { should respond_to(:remember_token) }    # Этот session объект делает идентификатор пользователя доступным от страницы к странице, сохраняя его в cookie
   it { should respond_to(:authenticate) }
   it { should respond_to(:microposts) }   # test for the presence of a microposts attribute
+  it { should respond_to(:feed) }    # каждый пользователь должен иметь поток сообщений,
 
   it { should be_valid }
 
@@ -168,6 +169,16 @@ describe User do
       microposts.each do |micropost|
         Micropost.find_by_id(micropost.id).should be_nil
       end
+    end
+
+    describe "status" do
+      let(:unfollowed_post) do
+        FactoryGirl.create(:micropost, user: FactoryGirl.create(:user))
+      end
+
+      its(:feed) { should include(newer_micropost) }
+      its(:feed) { should include(older_micropost) }
+      its(:feed) { should_not include(unfollowed_post) }
     end
   end
 end
