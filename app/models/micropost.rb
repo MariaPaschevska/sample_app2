@@ -1,8 +1,9 @@
 class Micropost < ActiveRecord::Base
   attr_accessible :content
   belongs_to :user
-  validates :user_id, presence: true, length: { maximum: 140 }
+  validates :content, presence: true, length: { maximum: 140 }  
   validates :user_id, presence: true
   # Упорядочивание микросообщений с default_scope, where DESC is SQL for “descending”
   default_scope order: 'microposts.created_at DESC'
+ 
 end
